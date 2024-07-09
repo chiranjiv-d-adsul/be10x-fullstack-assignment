@@ -38,7 +38,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-5">
       <h2 className="font-bold text-xl md:text-3xl  mb-1">
         Welcome, {user?.fullName} :)
       </h2>

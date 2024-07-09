@@ -1,48 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import {
-  LayoutGrid,
-  PiggyBank,
-  ReceiptText,
-  Settings,
-  ShieldCheck,
-} from "lucide-react";
+import { LayoutGrid, PiggyBank, Settings } from "lucide-react";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 
-function SideNav({ isOpen, toggleSidebar }) {
+function SideNav({ isOpen, toggleSidebar, updateRouteName }) {
   const path = usePathname();
 
   const menuList = [
-    {
-      id: 1,
-      name: "Dashboard",
-      icon: LayoutGrid,
-      link: "/dashboard",
-    },
-    {
-      id: 3,
-      name: "Budget",
-      icon: PiggyBank,
-      link: "/dashboard/budgets",
-    },
-    {
-      name: "Settings",
-      icon: Settings,
-      link: "/dashboard/settings",
-    },
+    { id: 1, name: "Dashboard", icon: LayoutGrid, link: "/dashboard" },
+    { id: 3, name: "Budget", icon: PiggyBank, link: "/dashboard/budgets" },
+    { id: 4, name: "Settings", icon: Settings, link: "/dashboard/settings" },
   ];
 
+  const handleMenuClick = (name) => {
+    updateRouteName(name);
+    toggleSidebar();
+  };
+
   return (
-    <div className={`h-screen p-5 border shadow-md ${isOpen ? 'block' : 'hidden'} md:block`}>
-      <div className="flex justify-between items-center">
-        <div className="flex gap-3 items-center">
+    <div className={`h-screen p-5 border shadow-md bg-white   ${isOpen ? 'block' : 'hidden'} md:block`}>
+      <div className="flex justify-between items-center gap-7 ">
+        <div className="flex gap-2 items-center border-b-2 pb-[14px]">
           <Image src="/logo.svg" alt="logo" width={40} height={40} />
           <h1 className="text-2xl font-mono text-stone-800">Tracker</h1>
         </div>
-        <div className="md:hidden">
+        <div className="md:hidden mb-[9px]">
           <button
             onClick={toggleSidebar}
             className="text-gray-500 hover:text-black focus:outline-none"
@@ -66,16 +51,16 @@ function SideNav({ isOpen, toggleSidebar }) {
       </div>
 
       <div className={`md:flex md:flex-col ${isOpen ? "block" : "hidden"}`}>
-        <div className="flex flex-col justify-center items-start mt-10 gap-2">
+        <div className="flex flex-col justify-center items-start mt-5 gap-3">
           {menuList.map((menu) => (
             <h2
               key={menu.id}
-              className={`text-gray-500 text-l hover:text-black hover:bg-slate-200 hover:w-[100%] flex items-center space-x-2 p-2 rounded-md ${
-                path == menu.link && "text-xl bg-slate-200 text-black w-[100%]"
+              className={`text-gray-500 text-l hover:text-black hover:bg-slate-200 hover:w-[100%] flex items-center space-x-2 p-2 rounded-md
+                ${path == menu.link ? "text-black  bg-slate-200 text-xl w-[100%]" : ""
               }`}
             >
               <menu.icon size={24} />
-              <a className="" href={menu.link}>
+              <a className="" href={menu.link} onClick={() => handleMenuClick(menu.name)}>
                 {menu.name}
               </a>
             </h2>

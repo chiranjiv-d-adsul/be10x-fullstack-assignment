@@ -1,46 +1,65 @@
 'use client';
 
-
-import React, { useEffect } from 'react'
-import SideNav from './_components/SideNav'
-import DashboardHeader from './_components/DashboardHeader'
+import React, { useEffect, useState } from 'react';
+import SideNav from './_components/SideNav';
+import DashboardHeader from './_components/DashboardHeader';
 import { useUser } from '@clerk/nextjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../../../utils/dbConfig';
 import { Budgets } from '../../../utils/schema';
-import { useRouter } from 'next/navigation';
-function DashboardLayout({children}) {
+import { useRouter, usePathname } from 'next/navigation';
 
-  const {user} = useUser();
-
+function DashboardLayout({ children }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [routeName, setRouteName] = useState('Dashboard');
+  const path = usePathname();
+  const { user } = useUser();
   const router = useRouter();
+
+  const menuList = [
+    { name: 'Dashboard', link: '/dashboard' },
+    { name: 'Budget', link: '/dashboard/budgets' },
+    { name: 'Settings', link: '/dashboard/settings' },
+  ];
+
   useEffect(() => {
-    user&&checkUserBudgets();
-  }, [user])
-
-
-  const checkUserBudgets = async() => {
-    const result =await db.select().from(Budgets).where(eq(Budgets.createBy, user?.primaryEmailAddress?.emailAddress))
-
-    // console.log(result);
-    if(result?.length==0){
-      router.replace('/dashboard/budgets')
+    const currentMenu = menuList.find((menu) => menu.link === path);
+    if (currentMenu) {
+      setRouteName(currentMenu.name);
     }
-  }
+  }, [path]);
 
-   return (
-    <div>
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
 
+  useEffect(() => {
+    if (user) {
+      checkUserBudgets();
+    }
+  }, [user]);
 
-      <div className='fixed md:w-64 hidden md:block'>
-      <SideNav />
+  const checkUserBudgets = async () => {
+    const result = await db
+      .select()
+      .from(Budgets)
+      .where(eq(Budgets.createBy, user?.primaryEmailAddress?.emailAddress));
+    if (result?.length === 0) {
+      router.replace('/dashboard/budgets');
+    }
+  };
+
+  return (
+    <div className="flex">
+      <div className={`fixed md:w-64 ${isOpen ? 'block' : 'hidden'} md:block`}>
+        <SideNav isOpen={isOpen} toggleSidebar={toggleSidebar} updateRouteName={setRouteName} />
       </div>
-      <div className='md:ml-64'>
-        <DashboardHeader />
-          {children}
+      <div className="flex-1 md:ml-64">
+        <DashboardHeader toggleSidebar={toggleSidebar} routeName={routeName} />
+        <div className="">{children}</div>
       </div>
     </div>
-  )
+  );
 }
 
-export default DashboardLayout
+export default DashboardLayout;

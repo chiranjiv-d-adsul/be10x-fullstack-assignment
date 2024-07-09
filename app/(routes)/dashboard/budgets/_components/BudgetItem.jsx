@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-
+import   {IndianRupee}   from "lucide-react";
 function BudgetItem({ budget }) {
   const spendPercentage = budget?.totalSpend && budget?.amount ? (budget.totalSpend / budget.amount) * 100 : 0;
 
@@ -21,15 +21,15 @@ function BudgetItem({ budget }) {
             <h2 className="text-sm text-gray-500">{budget?.totalItems} Items</h2>
           </div>
         </div>
-        <h2 className="font-bold text-primary text-lg">${budget?.amount}</h2>
+        <h2 className="font-bold text-primary text-lg flex justify-between items-center">   <IndianRupee  className="w-4 h-4" />  {budget?.amount}</h2>
       </div>
       <div className="mt-5">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xs text-slate-400 font-bold">
-            ${budget?.totalSpend ? budget.totalSpend : 0} Spend
+          <h2 className="text-xs text-slate-400 font-bold flex justify-between items-center">
+          <IndianRupee className="w-4 h-4"  />  {budget?.totalSpend ? budget.totalSpend : 0} Spend
           </h2>
-          <h2 className="text-xs text-slate-400 font-bold">
-            ${budget?.amount ? budget.amount - budget.totalSpend : 0} Remaining
+          <h2 className="text-xs text-slate-400 font-bold flex justify-between items-center">
+          <IndianRupee  className="w-4 h-4" /> {budget?.amount ? budget.amount - budget.totalSpend : 0} Remaining
           </h2>
         </div>
         <div className="w-full bg-slate-300 h-2 rounded-full">

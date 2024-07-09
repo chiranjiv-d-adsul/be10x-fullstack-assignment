@@ -3,8 +3,8 @@ import BudgetList from './_components/BudgetList'
 
 function Budget() {
   return (
-    <div className='p-10'>
-      <h1 className='font-bold text-3xl'>Budgets</h1>
+    <div className='p-5'>
+      <h1 className='font-bold text-3xl'>Your Budgets</h1>
       <BudgetList/>
     </div>
   )
