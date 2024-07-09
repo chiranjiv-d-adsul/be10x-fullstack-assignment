@@ -62,10 +62,10 @@ function Hero() {
 
 
 <div className="flex space-x-4 m-8 justify-center items-center">
-      <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/chiranjiv-d-adsul/be10x-fullstack-assignment.git" target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon icon={faGithub} className="text-gray-600 " size="2x" />
       </a>
-      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">
+      <a href="https://www.linkedin.com/in/chiranjivdadsul/" target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon icon={faLinkedin} className="text-gray-600 " size="2x" />
       </a>
 
