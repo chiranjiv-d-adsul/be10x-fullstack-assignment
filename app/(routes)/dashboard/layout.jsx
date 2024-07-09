@@ -51,7 +51,7 @@ function DashboardLayout({ children }) {
 
   return (
     <div className="flex">
-      <div className={`fixed md:w-64 ${isOpen ? 'block' : 'hidden'} md:block`}>
+      <div className={`fixed md:w-64 z-10 ${isOpen ? 'block' : 'hidden'} md:block`}>
         <SideNav isOpen={isOpen} toggleSidebar={toggleSidebar} updateRouteName={setRouteName} />
       </div>
       <div className="flex-1 md:ml-64">

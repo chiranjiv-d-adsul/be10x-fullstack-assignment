@@ -50,7 +50,7 @@ function SideNav({ isOpen, toggleSidebar, updateRouteName }) {
         </div>
       </div>
 
-      <div className={`md:flex md:flex-col ${isOpen ? "block" : "hidden"}`}>
+      <div className={`md:flex md:flex-col  ${isOpen ? "block" : "hidden"}`}>
         <div className="flex flex-col justify-center items-start mt-5 gap-3">
           {menuList.map((menu) => (
             <h2
