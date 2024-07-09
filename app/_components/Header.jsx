@@ -11,21 +11,24 @@ function Header() {
 
   return (
     <div className="p-5 flex justify-between items-center border shadow-md">
-      <Image src="/logo.svg" alt="logo" width={40} height={40} />
+      <div className='flex justify-between items-center gap-3'>
 
+      <Image src="/logo.svg" alt="logo" width={40} height={40} />
+      <span className="text-xl font-bold">
+        Expense Tracker
+        </span>
+      </div>
       {/* Conditional rendering based on user sign-in status */}
       {isSignedIn ? (
-        <Link href="/dashboard">
-            <Button>Dashboard</Button>
-        </Link>
+
+            <UserButton />
       ) : (
         <Link href="/sign-up">
-            <Button>Get Started</Button>
+            <Button className>Get Started</Button>
         </Link>
       )}
 
       {/* Always show the UserButton if signed in */}
-      {isSignedIn && <UserButton />}
     </div>
   );
 }

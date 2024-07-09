@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import {
@@ -11,13 +12,8 @@ import {
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 
-function SideNav() {
-  const [isOpen, setIsOpen] = useState(false);
+function SideNav({ isOpen, toggleSidebar }) {
   const path = usePathname();
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   const menuList = [
     {
@@ -26,24 +22,12 @@ function SideNav() {
       icon: LayoutGrid,
       link: "/dashboard",
     },
-    // {
-    //   id: 2,
-    //   name: "Expenses",
-    //   icon: ReceiptText,
-    //   link: "/dashboard/expenses",
-    // },
     {
       id: 3,
       name: "Budget",
       icon: PiggyBank,
       link: "/dashboard/budgets",
     },
-    // {
-    //   id: 4,
-    //   name: "Upgrade",
-    //   icon: ShieldCheck,
-    //   link: "/dashboard/upgrade",
-    // },
     {
       name: "Settings",
       icon: Settings,
@@ -52,7 +36,7 @@ function SideNav() {
   ];
 
   return (
-    <div className="h-screen p-5 border shadow-md">
+    <div className={`h-screen p-5 border shadow-md ${isOpen ? 'block' : 'hidden'} md:block`}>
       <div className="flex justify-between items-center">
         <div className="flex gap-3 items-center">
           <Image src="/logo.svg" alt="logo" width={40} height={40} />
@@ -60,7 +44,7 @@ function SideNav() {
         </div>
         <div className="md:hidden">
           <button
-            onClick={toggleMenu}
+            onClick={toggleSidebar}
             className="text-gray-500 hover:text-black focus:outline-none"
           >
             <svg
@@ -70,21 +54,12 @@ function SideNav() {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              {isOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -92,7 +67,7 @@ function SideNav() {
 
       <div className={`md:flex md:flex-col ${isOpen ? "block" : "hidden"}`}>
         <div className="flex flex-col justify-center items-start mt-10 gap-2">
-          {menuList.map((menu, index) => (
+          {menuList.map((menu) => (
             <h2
               key={menu.id}
               className={`text-gray-500 text-l hover:text-black hover:bg-slate-200 hover:w-[100%] flex items-center space-x-2 p-2 rounded-md ${

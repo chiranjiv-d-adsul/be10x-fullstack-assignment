@@ -18,14 +18,17 @@ import { Input } from "/components/ui/input";
 import { db } from "../../../../../utils/dbConfig";
 import { Budgets } from "../../../../../utils/schema";
 import { toast } from "sonner";
-import { RefreshCcwIcon } from "lucide-react";
+import { Loader, RefreshCcwIcon } from "lucide-react";
 import moment from "moment";
 
 function AddExpense({ budgetId, user, refreshData }) {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // use to add new expense
   const addNewExpense = async () => {
+    setLoading(true);
     const result = await db
       .insert(Expenses)
       .values({
@@ -36,12 +39,17 @@ function AddExpense({ budgetId, user, refreshData }) {
       })
       .returning({ insertedId: Budgets.id });
 
+    setAmount("");
+    setName("");
+
     if (result) {
+      setLoading(false);
       refreshData();
       toast.success("Expense Created Successfully");
     } else {
       toast.error("Expense Creation Failed");
     }
+    setLoading(false);
   };
 
   return (
@@ -50,6 +58,7 @@ function AddExpense({ budgetId, user, refreshData }) {
       <div className="mt-2">
         <h2 className="text-black font-medium my-1">Expense Name</h2>
         <Input
+          value={name}
           placeholder="Enter expense name"
           onChange={(e) => setName(e.target.value)}
         />
@@ -57,6 +66,7 @@ function AddExpense({ budgetId, user, refreshData }) {
       <div className="mt-2">
         <h2 className="text-black font-medium my-1">Expense Amount</h2>
         <Input
+          value={amount}
           placeholder="Enter expense amount"
           type="number"
           onChange={(e) => setAmount(e.target.value)}
@@ -65,10 +75,14 @@ function AddExpense({ budgetId, user, refreshData }) {
 
       <Button
         className="mt-5 relative bg-amber-900"
-        disabled={!(name && amount)}
-        onClick={addNewExpense}
+        disabled={!(name && amount)   || loading}
+        onClick={() => addNewExpense()}
       >
-        Add New Expense
+        {loading ? (
+          <Loader className="animate-spin" size={20} />
+        ) : (
+          "Add New Expense"
+        )}
       </Button>
     </div>
   );
