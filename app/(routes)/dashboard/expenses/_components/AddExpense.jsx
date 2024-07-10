@@ -75,6 +75,7 @@ function AddExpense({ budgetId, user, refreshData }) {
         <Input
           value={name}
           placeholder="Enter expense name"
+          type="text"
           onChange={(e) => setName(e.target.value)}
         />
       </div>
