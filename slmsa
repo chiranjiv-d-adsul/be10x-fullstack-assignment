@@ -1,70 +1,78 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
-import moment from "moment";
 import { Expenses, Budgets } from "../../../../../utils/schema";
+import { Button } from "/components/ui/button";
+import { Input } from "/components/ui/input";
 import { db } from "../../../../../utils/dbConfig";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
-import { Input } from "/components/ui/input";
-import { Button } from "/components/ui/button";
-import { eq } from "drizzle-orm";
+import moment from "moment";
 
 function AddExpense({ budgetId, user, refreshData }) {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [budgetInfo, setBudgetInfo] = useState(null);
+  const [totalBudget, setTotalBudget] = useState(0);
 
+  // Fetch the total budget amount
   useEffect(() => {
-    getBudgetInfo();
-  }, []);
+    const fetchBudget = async () => {
+      try {
+        const budget = await db
+          .select()
+          .from(Budgets)
+          .where({ id: budgetId })
+          .single();
 
-  const getBudgetInfo = async () => {
-    const result = await db
-      .select({
-        totalAmount: Budgets.amount,
-      })
-      .from(Budgets)
-      .where(eq(Budgets.id, budgetId))
-      .limit(1);
+        if (budget) {
+          setTotalBudget(Number(budget.amount)); // Ensure totalBudget is a number
+        }
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      }
+    };
+    fetchBudget();
+  }, [budgetId]);
 
-    setBudgetInfo(result[0]);
-  };
-
+  // Use to add new expense
   const addNewExpense = async () => {
+    const numericAmount = parseFloat(amount);
+
+    console.log("Amount entered:", numericAmount);
+    console.log("Total budget:", totalBudget);
+
+    if (numericAmount > totalBudget) {
+      toast.error("Entered amount exceeds the total budget amount");
+      return;
+    }
+
     setLoading(true);
+    try {
+      const result = await db
+        .insert(Expenses)
+        .values({
+          name: name,
+          amount: numericAmount, // Ensure amount is a number
+          budgetId: budgetId,
+          createdAt: moment().format("DD/MM/yyyy HH:mm:ss"),
+        })
+        .returning({ insertedId: Budgets.id });
 
-    if (!budgetInfo) {
-      toast.error("Budget information not loaded!");
-      setLoading(false);
-      return;
-    }
+      setAmount("");
+      setName("");
 
-    if (parseInt(amount) > budgetInfo.totalAmount) {
-      toast.error("Entered amount exceeds budget amount!");
-      setLoading(false);
-      return;
-    }
-
-    const result = await db
-      .insert(Expenses)
-      .values({
-        name: name,
-        amount: amount,
-        budgetId: budgetId,
-        createdAt: moment().format("DD/MM/yyyy HH:mm:ss"),
-      })
-      .returning({ insertedId: Expenses.id });
-
-    setAmount("");
-    setName("");
-
-    if (result) {
-      setLoading(false);
-      refreshData();
-      toast.success("Expense Created Successfully");
-    } else {
+      if (result) {
+        setLoading(false);
+        refreshData();
+        toast.success("Expense Created Successfully");
+      } else {
+        toast.error("Expense Creation Failed");
+      }
+    } catch (error) {
       toast.error("Expense Creation Failed");
     }
+    setLoading(false);
   };
 
   return (
