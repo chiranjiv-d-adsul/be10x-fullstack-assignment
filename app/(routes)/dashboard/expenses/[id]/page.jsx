@@ -84,20 +84,20 @@ function ExpensesScreen({ params }) {
 
 
   return (
-    <div className="p-10">
+    <div className="md:p-10 p-2">
       <h2 className="text-2xl font-bold flex justify-between items-center">
-        <span className="flex gap-2 items-center">
+        <span className="flex gap-2 text-[22px] md:text-lg items-center">
       <ArrowLeft onClick={()=>router.back()} className="cursor-pointer" />
         Expenses
         </span>
         <div className="flex gap-2 items-center ">
 
-          <EditBudget  budgetInfo={  budgetInfo }
+          <EditBudget size="sm"  budgetInfo={  budgetInfo }
           refreshData={() => getBudgetInfo()}
           />
         <AlertDialog>
           <AlertDialogTrigger asChild>
-          <Button  variant="destructive" className="flex gap-2">
+          <Button size="sm"  variant="destructive" className="flex gap-2">
           <Trash />
           Delete
         </Button>

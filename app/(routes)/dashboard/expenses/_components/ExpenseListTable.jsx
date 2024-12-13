@@ -1,17 +1,10 @@
-import { Trash } from "lucide-react";
+"use client"
+import { IndianRupee, Trash } from "lucide-react";
 import React from "react";
 import { eq } from "drizzle-orm";
 import { toast } from "sonner";
-import { getTableColumns, sql } from "drizzle-orm";
-import { db } from "../../../../../utils/dbConfig";
-import { Budgets } from "../../../../../utils/schema";
-import { useUser } from "@clerk/nextjs";
 import { Expenses } from "../../../../../utils/schema";
-import { useState } from "react";
-import { index } from "drizzle-orm/mysql-core";
-import { Bug } from "lucide-react";
-import { desc } from "drizzle-orm";
-import { IndianRupee } from "lucide-react";
+import { db } from "../../../../../utils/dbConfig";
 
 function ExpenseListTable({ expensesList, refreshData }) {
   const handleDelete = async (expense) => {
@@ -28,58 +21,93 @@ function ExpenseListTable({ expensesList, refreshData }) {
   };
 
   return (
-    <div className="overflow-x-auto  shadow-md">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-bold text-black uppercase tracking-wider"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-bold text-black uppercase tracking-wider"
-            >
-              Amount
-            </th>
-            <th
-              scope="col"
-              className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-bold text-black uppercase tracking-wider"
-            >
-              Date
-            </th>
-            <th
-              scope="col"
-              className="px-4 py-2 sm:px-6 sm:py-3 text-left text-xs font-bold text-black uppercase tracking-wider"
-            >
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {expensesList.map((expense, index) => (
-            <tr key={expense.id}>
-              <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {expense.name}
-              </td>
-              <td className=" flex items-center px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-500">
-              <IndianRupee  className="w-4 h-4" /> {expense.amount}
-              </td>
-              <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-500">
-                {expense.createdAt}
-              </td>
-              <td className="px-4 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-500">
-                <Trash
-                  onClick={() => handleDelete(expense)}
-                  className="cursor-pointer hover:text-red-800 text-red-600"
-                />
-              </td>
+    <div className="w-full">
+      {/* Table for larger screens */}
+      <div className="hidden sm:block overflow-x-auto shadow-md rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Name
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Amount
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Action
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {expensesList.map((expense) => (
+              <tr key={expense.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {expense.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <IndianRupee className="w-4 h-4 mr-1" />
+                    {expense.amount}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {expense.createdAt}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <button
+                    onClick={() => handleDelete(expense)}
+                    className="text-red-600 hover:text-red-900"
+                    aria-label="Delete expense"
+                  >
+                    <Trash className="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Card layout for smaller screens */}
+      <div className="sm:hidden space-y-4">
+        {expensesList.map((expense) => (
+          <div
+            key={expense.id}
+            className="bg-white shadow rounded-lg p-4 space-y-2"
+          >
+            <div className="font-medium text-gray-900">{expense.name}</div>
+            <div className="text-sm text-gray-500 flex items-center">
+              <IndianRupee className="w-4 h-4 mr-1" />
+              {expense.amount}
+            </div>
+            <div className="text-sm text-gray-500">{expense.createdAt}</div>
+            <div className="flex justify-end">
+              <button
+                onClick={() => handleDelete(expense)}
+                className="text-red-600 hover:text-red-900"
+                aria-label="Delete expense"
+              >
+                <Trash className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
